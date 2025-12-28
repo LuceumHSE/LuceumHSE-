@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лицей НИУ ВШЭ | Приложение для подготовки</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hse-yellow: #FFD600;
+            --hse-yellow-light: #FFF9C4;
+            --hse-yellow-dark: #FFC107;
+            --hse-white: #FFFFFF;
+            --hse-gray: #F5F5F5;
+            --hse-gray-dark: #757575;
+            --hse-blue: #0039A6;
+            --text-dark: #212121;
+            --text-light: #616161;
+            --shadow: 0 8px 30px rgba(255, 214, 0, 0.15);
+            --shadow-hover: 0 15px 40px rgba(255, 214, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --moose-brown: #8B4513;
+            --moose-light: #D2691E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--hse-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Лось в углу */
+        .moose-corner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: mooseFloat 6s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .moose {
+            font-size: 3rem;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+            transition: var(--transition);
+        }
+
+        .moose:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        @keyframes mooseFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-dark) 100%);
+            box-shadow: 0 4px 20px rgba(255, 214, 0, 0.2);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--hse-blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--hse-white);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--hse-yellow-dark);
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--hse-blue);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--hse-white);
+            color: var(--hse-yellow-dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--hse-blue);
+            border-radius: 50%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--hse-blue);
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        #app {
+            margin-top: 80px;
+            min-height: calc(100vh - 300px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            padding: 6rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--hse-yellow-light) 0%, transparent 70%);
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--hse-blue);
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .hero-moose {
+            position: absolute;
+            right: 100px;
+            bottom: 50px;
+            font-size: 8rem;
+            opacity: 0.2;
+            animation: mooseHero 10s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes mooseHero {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.05); }
+            50% { transform: rotate(0deg) scale(1.1); }
+            75% { transform: rotate(-5deg) scale(1.05); }
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-dark) 100%);
+            color: var(--hse-blue);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 10px 25px rgba(255, 214, 0, 0.3);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 214, 0, 0.4);
+            color: var(--hse-blue);
+        }
+
+        /* Common Sections */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--hse-blue);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--hse-yellow);
+            border-radius: 2px;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--hse-white);
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid var(--hse-yellow-light);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '🏆';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0.2;
+            font-size: 2rem;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--hse-yellow);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--hse-yellow-dark);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--hse-blue);
+            font-weight: 600;
+        }
+
+        .stat-desc {
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: var(--hse-white);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--hse-yellow-light);
+            position: relative;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--hse-yellow);
+        }
+
+        .feature-card::before {
+            content: '⭐';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--hse-yellow-light) 0%, var(--hse-yellow) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--hse-blue);
+            font-size: 2rem;
+            box-shadow: 0 4px 12px rgba(255, 214, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            color: var(--hse-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* Cards Page */
+        .subject-categories {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            justify-content: center;
+        }
+
+        .category-btn {
+            padding: 0.8rem 2rem;
+            background: var(--hse-white);
+            border: 2px solid var(--hse-yellow-light);
+            border-radius: 50px;
+            color: var(--text-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 4px 8px rgba(255, 214, 0, 0.1);
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-dark) 100%);
+            color: var(--hse-blue);
+            border-color: var(--hse-yellow);
+            box-shadow: 0 6px 15px rgba(255, 214, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .card-item {
+            background: var(--hse-white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 300px;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .card-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--hse-yellow);
+        }
+
+        .card-content {
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-subject {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, var(--hse-yellow-light) 0%, var(--hse-yellow) 100%);
+            color: var(--hse-blue);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+            box-shadow: 0 2px 6px rgba(255, 214, 0, 0.2);
+        }
+
+        .card-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--hse-blue);
+            flex-grow: 1;
+            line-height: 1.4;
+        }
+
+        .card-flip-btn {
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-dark) 100%);
+            color: var(--hse-blue);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+            box-shadow: 0 4px 8px rgba(255, 214, 0, 0.2);
+        }
+
+        .card-flip-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 214, 0, 0.3);
+        }
+
+        .card-answer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-dark) 100%);
+            color: var(--hse-blue);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            border-radius: var(--radius);
+        }
+
+        .card-item.flipped .card-answer {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .moose-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            opacity: 0.3;
+        }
+
+        /* About Page */
+        .about-hero {
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.08) 0%, rgba(255, 255, 255, 1) 100%);
+            padding: 4rem;
+            border-radius: var(--radius);
+            margin-bottom: 4rem;
+            border: 2px solid var(--hse-yellow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '🦌';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 4rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+
+        .about-content {
+            display: grid;
+            gap: 3rem;
+        }
+
+        .about-section {
+            background: var(--hse-white);
+            padding: 3rem;
+            border-radius: var(--radius);
+            border-left: 5px solid var(--hse-yellow);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .about-section::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .about-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--hse-blue);
+            position: relative;
+        }
+
+        .about-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--hse-yellow);
+        }
+
+        .directions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .direction-card {
+            background: var(--hse-white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--hse-yellow-light);
+        }
+
+        .direction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--hse-yellow);
+        }
+
+        .direction-card h4 {
+            color: var(--hse-blue);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            position: relative;
+        }
+
+        .direction-card h4::before {
+            content: '🎯';
+            margin-right: 8px;
+        }
+
+        /* Contacts Page */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .contact-card {
+            background: var(--hse-white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--hse-yellow-light);
+            position: relative;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .contact-card::after {
+            content: '📍';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.3;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--hse-yellow-dark) 0%, var(--hse-yellow) 100%);
+            color: var(--hse-blue);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '🦌';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 6rem;
+            opacity: 0.1;
+            transform: rotate(-10deg);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: var(--hse-blue);
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--hse-blue);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--hse-blue);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            opacity: 0.9;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            padding-left: 5px;
+            color: var(--hse-white);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 57, 166, 0.2);
+            color: var(--hse-blue);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero-moose {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--hse-yellow);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                border-top: 2px solid var(--hse-yellow-dark);
+            }
+            
+            nav ul.active {
+                display: flex;
+            }
+            
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .moose-corner {
+                display: none;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Easter Egg */
+        .moose-party {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--hse-yellow) 0%, var(--hse-yellow-light) 100%);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: partyEnter 0.5s ease;
+        }
+
+        .moose-party.show {
+            display: flex;
+        }
+
+        .moose-party h1 {
+            font-size: 4rem;
+            color: var(--hse-blue);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .moose-party .moose {
+            font-size: 10rem;
+            animation: partyMoose 2s ease-in-out infinite;
+        }
+
+        @keyframes partyEnter {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes partyMoose {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(20deg) scale(1.2); }
+            50% { transform: rotate(0deg) scale(1.3); }
+            75% { transform: rotate(-20deg) scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Лось в углу -->
+    <div class="moose-corner" onclick="showMooseParty()">
+        <div class="moose">🦌</div>
+    </div>
+
+    <!-- Easter Egg -->
+    <div class="moose-party" id="mooseParty">
+        <h1>Легендарный лось Лицея!</h1>
+        <div class="moose">🦌</div>
+        <button class="cta-button" onclick="hideMooseParty()" style="margin-top: 2rem;">
+            Вернуться к подготовке
+        </button>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo" onclick="navigateTo('home')">
+                <div class="logo-icon">HSE</div>
+                <span>Лицей НИУ ВШЭ</span>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav>
+                <ul id="navMenu">
+                    <li><a onclick="navigateTo('home')" class="nav-link active" data-page="home">Главная</a></li>
+                    <li><a onclick="navigateTo('about')" class="nav-link" data-page="about">О лицее</a></li>
+                    <li><a onclick="navigateTo('cards')" class="nav-link" data-page="cards">Карточки</a></li>
+                    <li><a onclick="navigateTo('directions')" class="nav-link" data-page="directions">Направления</a></li>
+                    <li><a onclick="navigateTo('contacts')" class="nav-link" data-page="contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main id="app">
+        <!-- Home Page -->
+        <section id="home-page" class="page active">
+            <div class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>Лицей НИУ ВШЭ — пространство для твоего будущего</h1>
+                        <p>Сотрудничество и взаимоуважение, независимо от возраста и статуса. Подготовка к поступлению в 8 класс с лучшими образовательными инструментами.</p>
+                        <button class="cta-button" onclick="navigateTo('cards')">
+                            Начать подготовку
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-moose">🦌</div>
+            </div>
+
+            <div class="container">
+                <h2 class="section-title">Лицей в цифрах</h2>
+                <div class="stats-grid">
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">2,297</div>
+                        <div class="stat-label">учащихся</div>
+                        <div class="stat-desc">талантливых школьников</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">265</div>
+                        <div class="stat-label">педагогов</div>
+                        <div class="stat-desc">высокой квалификации</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">71</div>
+                        <div class="stat-label">призовых места</div>
+                        <div class="stat-desc">на Всероссийской олимпиаде 2025</div>
+                    </div>
+                    <div class="stat-card fade-in">
+                        <div class="stat-number">103</div>
+                        <div class="stat-label">100-балльных ЕГЭ</div>
+                        <div class="stat-desc">в 2024 году</div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Возможности для подготовки</h2>
+                <div class="features-grid">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <h3>Интерактивные карточки</h3>
+                        <p>Более 50 карточек по всем предметам вступительных испытаний для 8 класса с системой повторения и запоминания.</p>
+                        <div class="moose-hint">🦌</div>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Полная информация</h3>
+                        <p>Подробные сведения о всех направлениях обучения, преподавателях, учебных программах и требованиях к поступлению.</p>
+                        <div class="moose-hint">🦌</div>
+                    </div>
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Статистика успеха</h3>
+                        <p>Аналитика результатов предыдущих лет, проходные баллы и рекомендации для успешного поступления.</p>
+                        <div class="moose-hint">🦌</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about-page" class="page">
+            <div class="container">
+                <div class="about-hero">
+                    <h1 class="section-title">О Лицее НИУ ВШЭ</h1>
+                    <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; text-align: center;">
+                        Лицей НИУ ВШЭ — это современное образовательное пространство, где сочетаются академические традиции Высшей школы экономики и инновационные подходы к обучению.
+                    </p>
+                    <div style="text-align: center; margin-top: 2rem; font-size: 3rem;">🦌</div>
+                </div>
+                
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Наша философия</h3>
+                        <p>Лицей создаёт среду, в которой каждый ученик может максимально раскрыть свой потенциал. Мы верим в партнёрские отношения между учениками, учителями и родителями, основанные на взаимном уважении и доверии.</p>
+                        <p>Образование в лицее — это не просто передача знаний, а формирование критического мышления, исследовательских навыков и социальной ответственности.</p>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>История и достижения</h3>
+                        <p>Лицей НИУ ВШЭ был основан в 2013 году и с тех пор стабильно входит в топ-5 лучших школ Москвы и топ-10 школ России.</p>
+                        <div class="stats-grid" style="margin-top: 2rem;">
+                            <div class="stat-card">
+                                <div class="stat-number">10+</div>
+                                <div class="stat-label">лет работы</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">поступление в вузы</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">85%</div>
+                                <div class="stat-label">в НИУ ВШЭ</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>Учебный процесс</h3>
+                        <p>Лицей предлагает уникальную образовательную модель, которая включает:</p>
+                        <ul style="margin: 1.5rem 0; padding-left: 1.5rem;">
+                            <li style="margin-bottom: 0.8rem;">Профильное обучение по 9 направлениям в 10-11 классах</li>
+                            <li style="margin-bottom: 0.8rem;">Систему факультетских дней в НИУ ВШЭ</li>
+                            <li style="margin-bottom: 0.8rem;">Проектную и исследовательскую деятельность</li>
+                            <li style="margin-bottom: 0.8rem;">Элективные курсы по выбору учащихся</li>
+                            <li>Подготовку к олимпиадам и конкурсам</li>
+                        </ul>
+                        <p style="margin-top: 1rem; font-style: italic; color: var(--hse-blue);">
+                            🦌 <strong>Интересный факт:</strong> Легендарный лось - символ мудрости и упорства в учебе!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Page -->
+        <section id="cards-page" class="page">
+            <div class="container">
+                <h1 class="section-title">Карточки для подготовки</h1>
+                <p style="text-align: center; margin-bottom: 3rem; color: var(--text-light); max-width: 700px; margin-left: auto; margin-right: auto;">
+                    Более 50 карточек по всем предметам вступительных испытаний для 8 класса. Кликните на карточку, чтобы увидеть ответ.
+                </p>
+                
+                <div class="subject-categories">
+                    <button class="category-btn active" onclick="filterCards('all')">Все предметы</button>
+                    <button class="category-btn" onclick="filterCards('math')">Математика</button>
+                    <button class="category-btn" onclick="filterCards('rus')">Русский язык</button>
+                    <button class="category-btn" onclick="filterCards('science')">Естествознание</button>
+                    <button class="category-btn" onclick="filterCards('history')">История</button>
+                    <button class="category-btn" onclick="filterCards('literature')">Литература</button>
+                </div>
+                
+                <div class="cards-grid" id="cardsContainer">
+                    <!-- Карточки будут загружены через JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Directions Page -->
+        <section id="directions-page" class="page">
+            <div class="container">
+                <h1 class="section-title">Направления обучения</h1>
+                <p style="text-align: center; margin-bottom: 4rem; color: var(--text-light); max-width: 800px; margin-left: auto; margin-right: auto;">
+                    Лицей предлагает различные направления обучения для 8-9 и 10-11 классов, позволяя каждому ученику выбрать траекторию, соответствующую его интересам и способностям.
+                </p>
+                
+                <div class="about-section">
+                    <h3>8-9 классы: направления предпрофильной подготовки 🦌</h3>
+                    <div class="directions-grid">
+                        <div class="direction-card">
+                            <h4>Футуритет</h4>
+                            <p><strong>Специализация «Универсальная»</strong></p>
+                            <p>2 года обучения, пространство самоопределения и подготовки к будущему образованию. Вариативный учебный план с большим выбором элективных курсов.</p>
+                            <p><strong>325+ обучающихся</strong></p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Естественные науки и психология</h4>
+                            <p>Углубленное изучение биологии, химии, географии и психологии. Сотрудничество с факультетами НИУ ВШЭ: биологии и биотехнологии, химии, географии.</p>
+                            <p><strong>50+ обучающихся</strong></p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Математика и физика</h4>
+                            <p>Углубленное изучение алгебры, геометрии, физики, а также математического анализа в качестве отдельной дисциплины. Системная подготовка к олимпиадам.</p>
+                            <p><strong>50+ обучающихся</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <h3>10-11 классы: профильное обучение</h3>
+                    <div class="directions-grid">
+                        <div class="direction-card">
+                            <h4>Гуманитарные науки</h4>
+                            <p>Изучение истории, литературы, обществознания, иностранных языков на углубленном уровне. Подготовка к поступлению на гуманитарные факультеты.</p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Экономика и математика</h4>
+                            <p>Сочетание математической подготовки с изучением экономики, основ предпринимательства и финансовой грамотности.</p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Информатика, инженерия и математика</h4>
+                            <p>Программирование, алгоритмы, робототехника, углубленная математика. Подготовка IT-специалистов.</p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Естественные науки</h4>
+                            <p>Биология, химия, физика, экология. Лабораторные исследования и научная работа.</p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Дизайн</h4>
+                            <p>Графический дизайн, веб-дизайн, основы композиции и цветоведения. Развитие творческих способностей.</p>
+                        </div>
+                        <div class="direction-card">
+                            <h4>Востоковедение</h4>
+                            <p>Изучение восточных языков (китайский, японский, арабский), культуры и истории стран Востока.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacts Page -->
+        <section id="contacts-page" class="page">
+            <div class="container">
+                <h1 class="section-title">Контакты 🦌</h1>
+                
+                <div class="about-hero" style="background: linear-gradient(135deg, rgba(255, 214, 0, 0.08) 0%, rgba(255, 255, 255, 1) 100%);">
+                    <h2 style="text-align: center; margin-bottom: 2rem;">Свяжитесь с нами</h2>
+                    <p style="text-align: center; font-size: 1.2rem;">
+                        Приёмная комиссия Лицея: <strong>+7 (495) 772-95-90 доб. 23810</strong><br>
+                        Электронная почта: <strong>lyceum@hse.ru</strong>
+                    </p>
+                    <div style="text-align: center; margin-top: 2rem; font-size: 4rem; opacity: 0.3;">🦌</div>
+                </div>
+                
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Адреса корпусов</h3>
+                        <div class="directions-grid">
+                            <div class="direction-card">
+                                <h4>Основной корпус</h4>
+                                <p><strong>Адрес:</strong> Трифоновская, 57с1</p>
+                                <p><strong>Направления:</strong> «Востоковедение», «Гуманитарные науки», «Дизайн», «Юриспруденция»</p>
+                                <p><strong>Телефон:</strong> +7 (495) 772-95-90 доб. 23113 (зам. директора)</p>
+                            </div>
+                            <div class="direction-card">
+                                <h4>Корпус на Колобовском</h4>
+                                <p><strong>Адрес:</strong> 3-й Колобовский пер. 8с2</p>
+                                <p><strong>Направления:</strong> «Экономика и математика», «Экономика и социальные науки»</p>
+                                <p><strong>Телефон:</strong> +7 (495) 772-95-90 доб. 23341 (руководитель направления)</p>
+                            </div>
+                            <div class="direction-card">
+                                <h4>Корпус на Солянке</h4>
+                                <p><strong>Адрес:</strong> Солянка, 14Ас1</p>
+                                <p><strong>Направления:</strong> «Естественные науки», «Информатика, инженерия и математика», «Математика и физика»</p>
+                                <p><strong>Телефон:</strong> +7 (495) 772-95-90 доб. 23298 (менеджер)</p>
+                            </div>
+                            <div class="direction-card">
+                                <h4>Корпус на Лялином</h4>
+                                <p><strong>Адрес:</strong> Лялин пер. 3А</p>
+                                <p><strong>Направления:</strong> «Футуритет» (8-9 классы)</p>
+                                <p><strong>Телефон:</strong> +7 (495) 772-95-90 доб. 23046 (менеджер)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>Часы работы</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                            <div>
+                                <h4 style="color: var(--hse-blue); margin-bottom: 1rem;">Приёмная комиссия</h4>
+                                <p>Пн-Пт: 9:00-18:00</p>
+                                <p>Сб: 10:00-16:00</p>
+                                <p>Вс: выходной</p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--hse-blue); margin-bottom: 1rem;">Учебная часть</h4>
+                                <p>Пн-Пт: 8:30-19:00</p>
+                                <p>Сб: 9:00-15:00</p>
+                                <p>Вс: выходной</p>
+                            </div>
+                            <div>
+                                <h4 style="color: var(--hse-blue); margin-bottom: 1rem;">Секретариат</h4>
+                                <p>Пн-Чт: 9:00-18:00</p>
+                                <p>Пт: 9:00-17:00</p>
+                                <p>Сб-Вс: выходной</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Лицей НИУ ВШЭ</h3>
+                    <p>Пространство сотрудничества и взаимоуважения, где каждый школьник может раскрыть свой потенциал.</p>
+                    <div style="font-size: 2rem; margin-top: 1rem;">🦌</div>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul class="footer-links">
+                        <li><a onclick="navigateTo('home')">Главная</a></li>
+                        <li><a onclick="navigateTo('about')">О лицее</a></li>
+                        <li><a onclick="navigateTo('cards')">Карточки</a></li>
+                        <li><a onclick="navigateTo('directions')">Направления</a></li>
+                        <li><a onclick="navigateTo('contacts')">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>Приёмная комиссия: +7 (495) 772-95-90 доб. 23810</li>
+                        <li>Email: lyceum@hse.ru</li>
+                        <li>Москва, Трифоновская, 57с1</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2024 Лицей НИУ ВШЭ. Все права защищены. | Легендарный лось с нами 🦌
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Приложение в одном файле с желто-белой темой и лосем
+        
+        // База данных карточек (теперь с эмодзи лося)
+        const flashcards = [
+            // Математика (15 карточек)
+            { id: 1, category: "math", question: "Что такое среднее арифметическое чисел? 🦌", answer: "Среднее арифметическое чисел — это сумма всех чисел, деленная на их количество. Формула: <strong>X = (x₁ + x₂ + ... + xₙ) / n</strong>." },
+            { id: 2, category: "math", question: "Как найти площадь прямоугольника?", answer: "Площадь прямоугольника равна произведению его длины на ширину. Формула: <strong>S = a × b</strong>." },
+            { id: 3, category: "math", question: "Что такое простые числа? 🦌", answer: "Простые числа — это натуральные числа больше 1, которые имеют ровно два делителя: 1 и само число. Примеры: 2, 3, 5, 7, 11." },
+            { id: 4, category: "math", question: "Как решить уравнение 2x + 5 = 15?", answer: "1) 2x = 15 - 5; 2) 2x = 10; 3) x = 10 / 2; 4) x = 5. 🦌" },
+            { id: 5, category: "math", question: "Что такое пропорция?", answer: "Пропорция — это равенство двух отношений. Пример: a/b = c/d. Основное свойство: a × d = b × c." },
+            { id: 6, category: "math", question: "Как найти процент от числа? 🦌", answer: "Чтобы найти процент от числа, нужно число умножить на процент и разделить на 100. Пример: 20% от 50 = 50 × 20 ÷ 100 = 10." },
+            { id: 7, category: "math", question: "Что такое квадратное уравнение?", answer: "Уравнение вида ax² + bx + c = 0, где a ≠ 0. Решается через дискриминант: D = b² - 4ac. 🦌" },
+            { id: 8, category: "math", question: "Как найти гипотенузу прямоугольного треугольника?", answer: "По теореме Пифагора: c² = a² + b², где c — гипотенуза, a и b — катеты." },
+            
+            // Русский язык (12 карточек)
+            { id: 9, category: "rus", question: "Что такое причастие? 🦌", answer: "Причастие — это особая форма глагола, которая обозначает признак предмета по действию. Отвечает на вопросы: <em>какой? что делающий? что сделавший?</em>" },
+            { id: 10, category: "rus", question: "Чем отличается НЕ от НИ?", answer: "НЕ — отрицательная частица (не знаю). НИ — усилительная частица (ни разу) или часть союза (ни..., ни...). 🦌" },
+            { id: 11, category: "rus", question: "Что такое однородные члены предложения? 🦌", answer: "Это члены предложения, которые отвечают на один вопрос, относятся к одному слову и соединены сочинительной связью." },
+            { id: 12, category: "rus", question: "Как проверить безударную гласную в корне?", answer: "Нужно подобрать однокоренное слово или форму слова, где гласная стоит под ударением: вода — воды, лес — леса. 🦌" },
+            { id: 13, category: "rus", question: "Что такое деепричастие? 🦌", answer: "Деепричастие — это особая форма глагола, которая обозначает добавочное действие. Отвечает на вопросы: <em>что делая? что сделав?</em>" },
+            { id: 14, category: "rus", question: "Когда пишется -ться, а когда -тся?", answer: "-ться пишется в инфинитиве (что делать?), -тся — в 3 лице единственного числа (что делает?)." },
+            
+            // Естествознание (10 карточек)
+            { id: 15, category: "science", question: "Что такое фотосинтез? 🦌", answer: "Процесс преобразования растениями углекислого газа и воды в глюкозу и кислород под действием солнечного света." },
+            { id: 16, category: "science", question: "Какие три состояния вещества вы знаете?", answer: "Твердое, жидкое и газообразное. При изменении температуры или давления вещества могут переходить из одного состояния в другое. 🦌" },
+            { id: 17, category: "science", question: "Что такое сила тяжести? 🦌", answer: "Сила, с которой Земля притягивает к себе тела. Направлена к центру Земли, измеряется в ньютонах (Н)." },
+            { id: 18, category: "science", question: "Какие органоиды есть в клетке?", answer: "Ядро, митохондрии, рибосомы, эндоплазматическая сеть, аппарат Гольджи, лизосомы, клеточная мембрана. 🦌" },
+            { id: 19, category: "science", question: "Что такое экосистема? 🦌", answer: "Сообщество живых организмов и среда их обитания, функционирующие как единое целое." },
+            
+            // История (10 карточек)
+            { id: 20, category: "history", question: "Когда была Куликовская битва? 🦌", answer: "8 сентября 1380 года. Сражение между войсками Дмитрия Донского и Мамая." },
+            { id: 21, category: "history", question: "Кто такой Пётр I?", answer: "Русский царь (с 1682) и первый император Российской империи (с 1721). Провёл масштабные реформы. 🦌" },
+            { id: 22, category: "history", question: "Что такое феодальная раздробленность? 🦌", answer: "Период в истории Руси (XII-XV вв.), когда единое государство распалось на отдельные княжества." },
+            { id: 23, category: "history", question: "Когда началась Великая Отечественная война?", answer: "22 июня 1941 года нападением Германии на СССР. Закончилась 9 мая 1945 года. 🦌" },
+            { id: 24, category: "history", question: "Кто такие декабристы? 🦌", answer: "Участники восстания 14 декабря 1825 года, дворяне-революционеры, выступавшие против самодержавия." },
+            
+            // Литература (9 карточек)
+            { id: 25, category: "literature", question: "Кто написал «Евгения Онегина»? 🦌", answer: "Александр Сергеевич Пушкин. Роман в стихах, работа над которым велась с 1823 по 1830 год." },
+            { id: 26, category: "literature", question: "Что такое эпитет?", answer: "Художественное определение, придающее выражению образность и эмоциональность: <em>золотые</em> волосы, <em>холодный</em> ветер. 🦌" },
+            { id: 27, category: "literature", question: "Кто автор «Героя нашего времени»? 🦌", answer: "Михаил Юрьевич Лермонтов. Роман был опубликован в 1840 году." },
+            { id: 28, category: "literature", question: "Что такое антитеза?", answer: "Стилистический приём противопоставления: «Война и мир», «Отцы и дети». 🦌" },
+            { id: 29, category: "literature", question: "Кто такой Обломов? 🦌", answer: "Главный герой романа И.А. Гончарова «Обломов», символ русской лени и безволия." }
+        ];
+
+        // Система навигации
+        let currentPage = 'home';
+
+        function navigateTo(page) {
+            // Скрыть текущую страницу
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            // Показать выбранную страницу
+            document.getElementById(`${page}-page`).classList.add('active');
+            
+            // Обновить активную ссылку в навигации
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === page) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Обновить текущую страницу
+            currentPage = page;
+            
+            // Если перешли на страницу карточек - загрузить их
+            if (page === 'cards') {
+                renderCards();
+            }
+            
+            // Прокрутить наверх
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Закрыть мобильное меню если открыто
+            document.getElementById('navMenu').classList.remove('active');
+            document.getElementById('mobileMenuBtn').innerHTML = '<i class="fas fa-bars"></i>';
+            
+            // Добавить случайного лося иногда
+            if (Math.random() < 0.3) {
+                showRandomMoose();
+            }
+        }
+
+        // Показать случайного лося
+        function showRandomMoose() {
+            const mooseEmojis = ['🦌', '🦌', '🦌', '🦌', '🦌', '🫎', '🎯', '✨'];
+            const randomEmoji = mooseEmojis[Math.floor(Math.random() * mooseEmojis.length)];
+            
+            // Создать временный элемент с лосем
+            const tempMoose = document.createElement('div');
+            tempMoose.innerHTML = randomEmoji;
+            tempMoose.style.cssText = `
+                position: fixed;
+                font-size: 2rem;
+                z-index: 9999;
+                pointer-events: none;
+                animation: floatAway 2s ease-in-out forwards;
+            `;
+            
+            // Случайная позиция
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            tempMoose.style.left = `${x}px`;
+            tempMoose.style.top = `${y}px`;
+            
+            // Добавить на страницу
+            document.body.appendChild(tempMoose);
+            
+            // Удалить через 2 секунды
+            setTimeout(() => {
+                tempMoose.remove();
+            }, 2000);
+            
+            // Добавить стили для анимации
+            if (!document.querySelector('#mooseAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'mooseAnimation';
+                style.textContent = `
+                    @keyframes floatAway {
+                        0% { opacity: 1; transform: translate(0, 0) scale(1); }
+                        100% { opacity: 0; transform: translate(${Math.random() * 100 - 50}px, -100px) scale(0.5); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Фильтрация карточек
+        function filterCards(category) {
+            // Обновить активную кнопку категории
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === 'Все предметы' && category === 'all') {
+                    btn.classList.add('active');
+                } else if (btn.textContent.includes(getCategoryName(category))) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Отрисовать карточки
+            renderCards(category);
+        }
+
+        // Рендер карточек
+        function renderCards(category = 'all') {
+            const container = document.getElementById('cardsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const filteredCards = category === 'all' 
+                ? flashcards 
+                : flashcards.filter(card => card.category === category);
+            
+            filteredCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card-item fade-in';
+                cardElement.innerHTML = `
+                    <div class="card-content">
+                        <span class="card-subject">${getCategoryName(card.category)}</span>
+                        <div class="card-question">${card.question}</div>
+                        <button class="card-flip-btn" onclick="this.closest('.card-item').classList.toggle('flipped'); showRandomMoose();">
+                            <i class="fas fa-sync-alt"></i> Показать ответ
+                        </button>
+                    </div>
+                    <div class="card-answer">
+                        <div class="card-answer-content">${card.answer}</div>
+                        <button class="card-flip-btn" onclick="this.closest('.card-item').classList.toggle('flipped')" style="margin-top: 1.5rem;">
+                            <i class="fas fa-arrow-left"></i> Вернуться к вопросу
+                        </button>
+                    </div>
+                `;
+                container.appendChild(cardElement);
+            });
+            
+            // Активировать анимацию появления
+            setTimeout(() => {
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+        }
+
+        // Получить название категории
+        function getCategoryName(category) {
+            const names = {
+                'math': 'Математика 🦌',
+                'rus': 'Русский язык 🦌',
+                'science': 'Естествознание 🦌',
+                'history': 'История 🦌',
+                'literature': 'Литература 🦌'
+            };
+            return names[category] || category;
+        }
+
+        // Easter Egg - Лось пати
+        function showMooseParty() {
+            document.getElementById('mooseParty').classList.add('show');
+            // Добавить звук (если браузер разрешает)
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
+                audio.play();
+            } catch (e) {}
+        }
+
+        function hideMooseParty() {
+            document.getElementById('mooseParty').classList.remove('show');
+        }
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            // Мобильное меню
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navMenu.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Анимация появления элементов при прокрутке
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
+            // Инициализация карточек если на странице карточек
+            if (window.location.hash === '#cards' || currentPage === 'cards') {
+                navigateTo('cards');
+            }
+            
+            // Обработка хеша в URL
+            if (window.location.hash) {
+                const page = window.location.hash.substring(1);
+                if (['home', 'about', 'cards', 'directions', 'contacts'].includes(page)) {
+                    navigateTo(page);
+                }
+            }
+            
+            // Случайные лоси при загрузке
+            setTimeout(() => {
+                if (Math.random() < 0.5) {
+                    showRandomMoose();
+                }
+            }, 1000);
+        });
+
+        // Обновление URL при навигации
+        function updateURL(page) {
+            window.history.pushState({ page }, '', `#${page}`);
+        }
+
+        // Обработка кнопки "Назад" в браузере
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.page) {
+                navigateTo(event.state.page);
+            }
+        });
+    </script>
+</body>
+</html>
